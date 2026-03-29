@@ -38,9 +38,17 @@ const renderList = (highlights) => {
 const attachEvents = (highlights) => {
     // copy
     document.querySelectorAll(".copy").forEach((btn) => {
-        btn.onclick = () => {
+        btn.onclick = async () => {
             const index = btn.dataset.index;
-            navigator.clipboard.writeText(highlights[index].text);
+
+            await navigator.clipboard.writeText(highlights[index].text);
+
+            const original = btn.textContent;
+            btn.textContent = "Copied";
+
+            setTimeout(() => {
+                btn.textContent = original;
+            }, 2000);
         };
     });
 
