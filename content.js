@@ -14,7 +14,34 @@ document.addEventListener("mouseup", (e) => {
     }, 10);
 });
 
-function showPopup(text, x, y) {
+const saveHighlight = (text) => {
+    const highlight = {
+        text,
+        url: window.location.href,
+        time: Date.now()
+    };
+
+    chrome.storage.local.get(["highlights"], (result) => {
+        const highlights = result.highlights || [];
+        const exists = highlights.some(
+            (h) => h.text === text && h.url === window.location.href
+        );
+
+        if (!exists) {
+            highlights.push(highlight);
+            chrome.storage.local.set({ highlights });
+        }
+    });
+};
+
+const removePopup = () => {
+    if (popup) {
+        popup.remove();
+        popup = null;
+    }
+};
+
+const showPopup = (text, x, y) => {
     removePopup();
 
     popup = document.createElement("div");
@@ -58,31 +85,4 @@ function showPopup(text, x, y) {
     };
 
     document.body.appendChild(popup);
-}
-
-function saveHighlight(text) {
-    const highlight = {
-        text,
-        url: window.location.href,
-        time: Date.now()
-    };
-
-    chrome.storage.local.get(["highlights"], (result) => {
-        const highlights = result.highlights || [];
-        const exists = highlights.some(
-            (h) => h.text === text && h.url === window.location.href
-        );
-
-        if (!exists) {
-            highlights.push(highlight);
-            chrome.storage.local.set({ highlights });
-        }
-    });
-}
-
-function removePopup() {
-    if (popup) {
-        popup.remove();
-        popup = null;
-    }
-}
+};
