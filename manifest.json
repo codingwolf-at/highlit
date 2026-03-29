@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Highlit",
+    "version": "1.0",
+    "description": "A browser extension that allows users to highlight text on any webpage and save highlights locally.",
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "permissions": []
+}
