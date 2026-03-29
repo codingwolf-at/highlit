@@ -52,12 +52,32 @@ function showPopup(text, x, y) {
     });
 
     popup.querySelector("#save-highlight-btn").onclick = () => {
-        console.log("Saved:", text);
+        saveHighlight(text);
         window.getSelection().removeAllRanges();
         removePopup();
     };
 
     document.body.appendChild(popup);
+}
+
+function saveHighlight(text) {
+    const highlight = {
+        text,
+        url: window.location.href,
+        time: Date.now()
+    };
+
+    chrome.storage.local.get(["highlights"], (result) => {
+        const highlights = result.highlights || [];
+        const exists = highlights.some(
+            (h) => h.text === text && h.url === window.location.href
+        );
+
+        if (!exists) {
+            highlights.push(highlight);
+            chrome.storage.local.set({ highlights });
+        }
+    });
 }
 
 function removePopup() {
